@@ -1,0 +1,54 @@
+[
+  {
+    "id": 1,
+    "name": "Victim_Person_1_GocCayVenHo",
+    "label": "NGUOI (NAN NHAN #1 - DUOI GOC CAY KEO VEN HO)",
+    "x": 26.5,
+    "y": 14.5,
+    "z": 3.65,
+    "yaw": -130.0,
+    "temp_c": 37.4,
+    "emissivity": 0.985,
+    "status": "CAN CUU HO KHAN CAP",
+    "actor_name": "African_Poacher_1_WalkwRifleLow_Anim2_2"
+  },
+  {
+    "id": 2,
+    "name": "Victim_Person_2_VenBoSuoi",
+    "label": "NGUOI (NAN NHAN #2 - DUOI RANG CAY VEN BO SUOI)",
+    "x": 25.5,
+    "y": -12.5,
+    "z": 3.65,
+    "yaw": 110.0,
+    "temp_c": 37.2,
+    "emissivity": 0.985,
+    "status": "BI THUONG CAN SO CUU",
+    "actor_name": "African_Poacher_1_WalkwRifleLow_Anim3_11"
+  },
+  {
+    "id": 3,
+    "name": "Victim_Person_3_SuonDoi",
+    "label": "NGUOI (NAN NHAN #3 - BUI RAM CAY GAI SUON DOI)",
+    "x": -12.0,
+    "y": 18.0,
+    "z": 2.1,
+    "yaw": -45.0,
+    "temp_c": 37.6,
+    "emissivity": 0.985,
+    "status": "TINH TAO DANG VAY TAY",
+    "actor_name": "African_Poacher_1_WalkwRifleLow_Anim_11"
+  },
+  {
+    "id": 4,
+    "name": "Poacher_Human_4_GoCat",
+    "label": "NGUOI (DOI TUONG NGHI VAN #4 - GO CAT AN NAP)",
+    "x": -16.0,
+    "y": -4.0,
+    "z": 2.18,
+    "yaw": 30.0,
+    "temp_c": 37.3,
+    "emissivity": 0.985,
+    "status": "MUC TIEU THEO DOI",
+    "actor_name": "African_Poacher_2_WalkwRifle_Anim2_5"
+  }
+]

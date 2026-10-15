@@ -1,0 +1,72 @@
+{
+  "SettingsVersion": 1.2,
+  "SeeDocsAt": "https://microsoft.github.io/AirSim/settings/",
+  "SimMode": "Multirotor",
+  "ViewMode": "NoDisplay",
+  "AllowAPIAlways": true,
+  "SubWindows": [],
+  "Vehicles": {
+    "UAV1": {
+      "VehicleType": "SimpleFlight",
+      "AutoCreate": true,
+      "Sensors": {
+        "Lidar1": {
+          "SensorType": 6,
+          "Enabled": true,
+          "NumberOfChannels": 64,
+          "Range": 120.0,
+          "PointsPerSecond": 131072,
+          "RotationsPerSecond": 10,
+          "VerticalFOVUpper": 22.5,
+          "VerticalFOVLower": -22.5,
+          "HorizontalFOVStart": -180.0,
+          "HorizontalFOVEnd": 180.0,
+          "X": 0.35, "Y": 0.0, "Z": 0.15,
+          "Roll": 0.0, "Pitch": -45.0, "Yaw": 0.0,
+          "DataFrame": "SensorLocalFrame",
+          "DrawDebugPoints": false
+        }
+      },
+      "Cameras": {
+        "front_camera": {
+          "CaptureSettings": [
+            {
+              "ImageType": 0,
+              "Width": 640,
+              "Height": 512,
+              "FOV_Degrees": 50.0
+            },
+            {
+              "ImageType": 7,
+              "Width": 640,
+              "Height": 512,
+              "FOV_Degrees": 50.0
+            }
+          ],
+          "X": 0.35,
+          "Y": 0.0,
+          "Z": 0.15,
+          "Pitch": -45.0,
+          "Roll": 0.0,
+          "Yaw": 0.0
+        },
+        "chase_camera": {
+          "CaptureSettings": [
+            {
+              "ImageType": 0,
+              "Width": 960,
+              "Height": 540,
+              "FOV_Degrees": 90.0
+            }
+          ],
+          "X": -5.0,
+          "Y": 0.0,
+          "Z": -2.0,
+          "Pitch": -15.0,
+          "Roll": 0.0,
+          "Yaw": 0.0
+        }
+      }
+    }
+  }
+}
