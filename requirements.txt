@@ -1,0 +1,27 @@
+# Danh sach thu vien can thiet cho he thong AirSim Medieval Village UAV + 3D LiDAR Reconstruction
+# Cai dat nhanh: pip install -r requirements.txt
+
+# 1. Giao tiep RPC voi Unreal Engine 4.27 AirSim
+msgpack>=1.0.0
+msgpack-rpc-python==0.4.1
+
+# 2. Toan hoc & Xu ly hinh anh / do hoa
+numpy>=1.24.0
+opencv-python>=4.8.0
+scikit-learn>=1.4.0
+pygame-ce>=2.5.0
+matplotlib>=3.8.0
+
+# 3. AI & Deep Learning (YOLO & PoinTr Transformer)
+# Chu y: Tren may co GPU NVIDIA, khuyen khich cai PyTorch voi CUDA:
+# pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
+torch>=2.2.0
+torchvision>=0.17.0
+ultralytics>=8.2.0
+
+# 4. Xu ly & Tai tao Diem 3D LiDAR Ouster OS1-64
+open3d>=0.18.0
+
+# 5. Dieu khien cua so Windows OS
+pywin32>=306
+psutil>=5.9.0

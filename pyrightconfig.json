@@ -1,0 +1,16 @@
+{
+  "include": [
+    "main.py",
+    "configs",
+    "pipeline",
+    "app",
+    "evaluation",
+    "simulation"
+  ],
+  "extraPaths": [
+    ".",
+    "simulation"
+  ],
+  "reportMissingImports": "none",
+  "reportMissingModuleSource": "none"
+}

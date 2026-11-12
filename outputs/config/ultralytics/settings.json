@@ -1,0 +1,21 @@
+{
+  "settings_version": "0.0.6",
+  "datasets_dir": "D:\\AIP\\UAV Search-and-Rescue\\datasets",
+  "weights_dir": "weights",
+  "runs_dir": "runs",
+  "uuid": "71a94ae81267c35c027578c56f6725dfc9f0df9883b9a619b905e97bbae89d47",
+  "sync": true,
+  "api_key": "",
+  "openai_api_key": "",
+  "clearml": true,
+  "comet": true,
+  "dvc": true,
+  "hub": true,
+  "mlflow": true,
+  "neptune": true,
+  "raytune": true,
+  "tensorboard": false,
+  "wandb": false,
+  "vscode_msg": true,
+  "openvino_msg": true
+}

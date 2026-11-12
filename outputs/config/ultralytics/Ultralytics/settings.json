@@ -1,0 +1,19 @@
+{
+  "settings_version": "0.0.8",
+  "datasets_dir": "D:\\AIRSIM\\AirSim_MedievalVillage_UE427\\datasets",
+  "weights_dir": "weights",
+  "runs_dir": "runs",
+  "uuid": "d2bfd7de60a46cb8dfd7d527bada707e0322c36b94c5cd9effa9cf8c93d0e97f",
+  "sync": true,
+  "api_key": "",
+  "openai_api_key": "",
+  "clearml": true,
+  "comet": true,
+  "dvc": true,
+  "mlflow": true,
+  "raytune": true,
+  "tensorboard": false,
+  "wandb": false,
+  "vscode_msg": true,
+  "openvino_msg": true
+}
