@@ -164,7 +164,7 @@ pip install -r requirements.txt
 Do gói môi trường 3D Unreal Engine 4.27 (`WindowsNoEditor` đã tích hợp sẵn plugin AirSim) có dung lượng lớn nên được lưu trữ riêng trên Google Drive:
 
 > 🔗 **Link tải Bản đồ Mô phỏng Unreal Engine (`WindowsNoEditor`):**  
-> **[👉 DÁN LINK GOOGLE DRIVE CỦA BẠN VÀO ĐÂY 👈]**
+> **[https://drive.google.com/file/d/1LOmgK6vbJ0kVfmGQegFqbfDdbIUB-yZu/view](https://drive.google.com/file/d/1LOmgK6vbJ0kVfmGQegFqbfDdbIUB-yZu/view)**
 
 Sau khi tải về, thực hiện **1 trong 2 cách** sau để gắn bản đồ vào dự án:
 
