@@ -1,6 +1,6 @@
 # UAV Search-and-Rescue: Thermal–LiDAR 3D Localization & Mapping System
 
-Hệ thống mô phỏng tìm kiếm và cứu nạn (Search and Rescue — SAR) bằng thiết bị bay không người lái (UAV) trong môi trường rừng rậm và địa hình phức tạp, kết hợp **Camera Nhiệt Hồng ngoại (Thermal IR)**, **Camera Quang học (RGB)** và **Cảm biến Quét Laser 3D (LiDAR)** trên nền tảng **Unreal Engine 4 & Microsoft AirSim (`MedievalVillageMegascansS`)**.
+Hệ thống mô phỏng tìm kiếm và cứu nạn (Search and Rescue — SAR) bằng thiết bị bay không người lái (UAV) trong môi trường rừng rậm và địa hình phức tạp, kết hợp **Camera Nhiệt Hồng ngoại (Thermal IR)**, **Camera Quang học (RGB)** và **Cảm biến Quét Laser 3D (LiDAR)** trên nền tảng **Unreal Engine 4.27 & Microsoft AirSim (`MedievalVillageMegascansS`)**.
 
 ---
 
@@ -11,37 +11,57 @@ Trong thực tế tìm kiếm người mất tích ở vùng rừng núi hoặc 
 - **Camera Nhiệt 2D** giúp phát hiện nhanh nguồn nhiệt ấm áp của cơ thể sống nhưng chỉ cho biết vị trí trên mặt phẳng ảnh 2D (không đo được khoảng cách/tọa độ 3D chính xác) và dễ bị báo động giả bởi **động vật hoang dã** hoặc **đá/mái nhà hấp thụ nhiệt mặt trời**.
 - **Cảm biến LiDAR 3D** có khả năng phóng các tia laser xuyên qua các khe hở của tán lá để đo tọa độ 3D của mặt đất và vật thể bên dưới, nhưng đám mây điểm 3D thuần túy lại không biết đâu là cơ thể người có nhiệt độ sống.
 
-### Môi trường Mô phỏng 3D (`MedievalVillageMegascansS`)
-Dự án xây dựng một kịch bản cứu nạn hoàn chỉnh trong môi trường 3D độ chân thực cao gồm làng cổ, rừng thông rậm rạp, vách đá, sườn đồi và sông suối:
-- **12 Nạn nhân mất tích (Ground Truth Targets):** Được bố trí ở nhiều tư thế khác nhau (nằm bất tỉnh, ngồi tựa gốc cây, đứng dưới tán rừng, nằm cạnh bờ suối hoặc khuất sau công trình).
-- **Tác nhân gây nhiễu tự nhiên:** Trong bản đồ có các đàn **động vật** (trâu/bò có thân nhiệt ấm) cùng địa hình **đá tảng, thân cây gỗ, mái nhà** để kiểm chứng khả năng phân biệt thật/giả của thuật toán.
-- **Tổ hợp Cảm biến gắn trên UAV (`UAV1`):**
-  1. **Camera Nhiệt FLIR Boson (`640×512`, FOV `90°`):** Mô phỏng bức xạ nhiệt hồng ngoại với cơ chế truyền nhiệt lõi cơ thể (Torso Core Heat), tán xạ quang học và 4 bảng màu nhiệt (`White-Hot`, `Ironbow`, `Rainbow`, `Black-Hot`).
-  2. **Camera Quang học RGB (`640×512`):** Đồng trục với camera nhiệt để quan sát trực quan hiện trường.
-  3. **Cảm biến LiDAR 3D Ouster (`Lidar1`):** Quét đám mây điểm 3D đa kênh xung quanh UAV, cho phép tái tạo địa hình 3D và đo đạc kích thước vật thể dưới tán cây.
+---
+
+## 2. Kiến trúc Mô phỏng Unreal Engine 4.27 & Microsoft AirSim
+
+Hệ thống sử dụng sự kết hợp giữa **Unreal Engine 4.27 (UE4)** và plugin **Microsoft AirSim** để tái tạo một môi trường thử nghiệm vật lý khép kín, sát với điều kiện bay thực tế:
+
+### 2.1. Vai trò của Unreal Engine 4.27 (`MedievalVillageMegascansS`)
+- **Đồ họa & Địa hình Photorealistic (Quixel Megascans):** Xây dựng thế giới 3D quy mô lớn gồm ngôi làng cổ, rừng thông nhiều tầng tán lá, địa hình đồi dốc lồi lõm, vách đá, bờ suối và các công trình gỗ/đá với lưới va chạm vật lý (Collision Mesh) chi tiết.
+- **Kịch bản 12 Nạn nhân & Tác nhân Gây nhiễu:**
+  - Trong bản đồ bố trí **12 mô hình nạn nhân 3D (Ground Truth Targets)** ở nhiều tư thế khác nhau (nằm bất tỉnh, ngồi tựa gốc cây, đứng khuất dưới tán thông, nằm cạnh bờ suối hoặc sát vách nhà).
+  - Bổ sung các đàn **động vật hoang dã** (trâu/bò có thân nhiệt ấm) cùng **đá tảng, thân cây gỗ, mái nhà** làm nguồn gây nhiễu tự nhiên để kiểm chứng độ chính xác của thuật toán.
+- **Bản đóng gói Độc lập (`WindowsNoEditor`):** Toàn bộ môi trường Unreal Engine và plugin AirSim đã được biên dịch và đóng gói sẵn thành file thực thi độc lập (`MedievalVillageMegascansS.exe`). **Người dùng KHÔNG CẦN cài đặt bộ công cụ Unreal Engine Editor hay Visual Studio** — chỉ cần tải gói bản đồ về là chạy được ngay.
+
+### 2.2. Vai trò của Microsoft AirSim & Hệ thống Cảm biến trên UAV (`UAV1`)
+Plugin **AirSim** chạy bên trong tiến trình Unreal Engine, đảm nhiệm 2 nhiệm vụ cốt lõi:
+1. **Mô phỏng Động lực học Bay (`SimpleFlight` 6-DoF):**
+   - Tính toán vật lý bay 6 bậc tự do của quadrotor (trọng lực, lực đẩy cánh quạt, quán tính, ma sát không khí) và mô phỏng các cảm biến nội tại gồm **IMU (Gia tốc kế & Con quay hồi chuyển)**, **Từ kế (Magnetometer)**, **Áp kế (Barometer)** và **GPS**.
+2. **Mô phỏng Tổ hợp Cảm biến Thực tế gắn trên UAV (Cấu hình tại [`simulation/airsim_settings.json`](simulation/airsim_settings.json)):**
+   - **Camera Nhiệt Hồng ngoại FLIR Boson (`640×512`, FOV `90°`):** Trích xuất kênh bức xạ hồng ngoại từ bộ đệm Stencil/Infrared của Unreal Engine, kết hợp mô hình truyền nhiệt lõi cơ thể (Torso Core Heat) và tán xạ thấu kính Germanium.
+   - **Camera Quang học RGB (`640×512`, FOV `90°`):** Đặt đồng trục với camera nhiệt trên cụm Gimbal có thể điều chỉnh góc nghiêng (`Pitch` từ `0°` nhìn thẳng đến `-90°` nhìn thẳng xuống đất).
+   - **Cảm biến Quét Laser 3D LiDAR (`Lidar1` — 16 kênh, 10 Hz, 30.000 điểm/giây, tầm xa 75 m, góc quét dọc `+10°` đến `-45°`):** Bắn các tia Ray-casting trực tiếp trong không gian 3D của Unreal Engine, xuyên qua các khe hở tán lá để thu nhận đám mây điểm 3D `(X, Y, Z)` của địa hình và cơ thể nạn nhân bên dưới.
+3. **Giao tiếp Thời gian thực qua MsgPack-RPC (Cổng TCP `41451`):**
+   - AirSim mở cổng RPC `41451` để trạm điều khiển Python gửi lệnh vận tốc/góc quay ở tần số `33 Hz` và thu thập đồng bộ ảnh RGB + Nhiệt + LiDAR theo thời gian thực.
+
+### 2.3. Hai Chế độ Vận hành Cửa sổ Unreal Engine
+Khi chạy hệ thống, bạn có thể lựa chọn 1 trong 2 chế độ hiển thị của Unreal Engine:
+- **Chế độ Tối ưu Hiệu năng (`python main.py` hoặc `run.bat` — Mặc định):** Unreal Engine chạy ở chế độ `ViewMode: NoDisplay` (vẫn tính toán đầy đủ vật lý bay, quét tia LiDAR 3D và render hình ảnh cho camera trên mình UAV, nhưng tắt cửa sổ góc nhìn thứ 3 của màn hình chính). Chế độ này giúp **giảm 40%–60% tải GPU/VRAM**, ưu tiên tối đa FPS cho suy luận AI `YOLO26m`, giao diện GCS 2D và Bản đồ 3D.
+- **Chế độ Hiển thị Đầy đủ Cửa sổ 3D Unreal Engine (`python main.py all --show-unreal`):** Mở thêm cửa sổ đồ họa 3D trực tiếp của Unreal Engine (`1024×576`, chế độ camera `SpringArmChase` bay bám theo sau lưng chiếc UAV trong rừng) để bạn vừa điều khiển trên trạm GCS vừa quan sát trực quan chiếc drone đang bay lượn trong thế giới 3D.
 
 ---
 
-## 2. Khi Chạy Chương trình Hệ thống Hoạt động Như thế nào?
+## 3. Khi Chạy Chương trình Hệ thống Hoạt động Như thế nào?
 
-Khi bạn khởi chạy hệ thống (bằng `run.bat` hoặc `python main.py`), một quy trình tác chiến cứu hộ khép kín gồm **4 bước** sẽ diễn ra như sau:
+Khi bạn khởi chạy hệ thống, một quy trình tác chiến cứu hộ khép kín gồm **4 bước** sẽ diễn ra như sau:
 
-### Bước 1: Tự động Khởi tạo Thế giới Mô phỏng & Hiệu chuẩn Nhiệt độ
-- Hệ thống tự động bật môi trường Unreal Engine (`MedievalVillageMegascansS.exe`) và kết nối tới máy chủ vật lý AirSim qua cổng `41451`.
-- Ngay khi bản đồ tải xong, script [`simulation/scene_setup.py`](simulation/scene_setup.py) tự động quét toàn bộ đối tượng trong cảnh để hiệu chuẩn đặc tính bức xạ nhiệt: nền rừng/sông suối/đất đá mang nhiệt độ môi trường mát, động vật mang nhiệt độ ấm vừa phải, và 12 nạn nhân mang bức xạ nhiệt cơ thể người (`36.5°C – 38.5°C`).
+### Bước 1: Tự động Khởi tạo Thế giới Unreal Engine & Hiệu chuẩn Nhiệt độ
+- Hệ thống tự động bật tiến trình Unreal Engine (`MedievalVillageMegascansS.exe`) và đợi máy chủ AirSim sẵn sàng trên cổng `41451`.
+- Ngay khi bản đồ tải xong, script [`simulation/scene_setup.py`](simulation/scene_setup.py) tự động quét toàn bộ đối tượng 3D trong cảnh để hiệu chuẩn đặc tính bức xạ nhiệt: nền rừng/sông suối/đất đá mang nhiệt độ môi trường mát, động vật mang nhiệt độ ấm vừa phải, và 12 nạn nhân mang bức xạ nhiệt cơ thể người (`36.5°C – 38.5°C`).
 
 ### Bước 2: Mở Đồng thời 2 Cửa sổ Điều hành Thời gian thực
-Hệ thống tự động mở và sắp xếp **2 cửa sổ hoạt động song song**:
+Hệ thống tự động mở và sắp xếp **2 cửa sổ tác chiến hoạt động song song** (cùng cửa sổ Unreal Engine nếu bật `--show-unreal`):
 
 1. **Cửa sổ 1 — Trạm Điều khiển Mặt đất 2D (`GCS Station` - 60 FPS):**
    - **Khung Camera Nhiệt FLIR (Góc trên bên trái):** Hiển thị luồng ảnh nhiệt kèm các khung nhận diện AI **YOLO26m (`960×960`)** tự động bám theo mục tiêu. Trên mỗi khung hiển thị rõ: Phân loại (`NGƯỜI`, `ĐỘNG VẬT`, hoặc `TÍN HIỆU NHIỆT`), khoảng cách 3D tính bằng mét, và số điểm LiDAR xác nhận.
-   - **Khung Camera RGB (Góc trên bên phải):** Hiển thị hình ảnh màu thực tế tại cùng góc nhìn camera nhiệt kèm thước ngắm tâm (Crosshair) và thông số góc Gimbal.
-   - **Khung Radar LiDAR 2D (Góc dưới bên trái):** Hiển thị mặt cắt đám mây điểm xung quanh UAV theo hướng mũi bay (`Heading-Up` hoặc `North-Up`), giúp phi công quan sát địa hình và vật cản.
+   - **Khung Camera RGB (Góc trên bên phải):** Hiển thị hình ảnh màu thực tế từ camera quang học của UAV tại cùng góc nhìn camera nhiệt kèm thước ngắm tâm (Crosshair) và góc nghiêng Gimbal.
+   - **Khung Radar LiDAR 2D (Góc dưới bên trái):** Hiển thị mặt cắt đám mây điểm xung quanh UAV theo hướng mũi bay (`Heading-Up` hoặc `North-Up`), giúp phi công quan sát địa hình và tránh vật cản.
    - **Khung Phóng đại Mục tiêu ROI & Bảng Điều khiển Cứu hộ (Góc dưới bên phải & Cột phải):** Phóng to mục tiêu đang theo dõi, hiển thị trạng thái kết nối, tốc độ bay, độ cao AGL, và **Danh sách các nạn nhân đã đánh dấu** kèm tọa độ 3D `(X, Y, Z)`.
 
 2. **Cửa sổ 2 — Bản đồ Đám mây Điểm 3D Thời gian thực (`Open3D Viewer`):**
    - Nhận trực tiếp luồng điểm LiDAR từ trạm GCS thông qua bộ nhớ dùng chung (`Shared Memory mmap`) với độ trễ bằng 0.
-   - **UAV bay đến đâu, bản đồ 3D được vẽ thêm đến đó:** Toàn bộ nhà cửa, rừng cây, sườn đồi được tái tạo thành bản đồ 3D sống động tô màu theo độ cao địa hình, kèm mô hình khung UAV di chuyển theo thời gian thực.
+   - **UAV bay đến đâu, bản đồ 3D được vẽ thêm đến đó:** Toàn bộ nhà cửa, rừng cây, sườn đồi trong Unreal Engine được quét và tái tạo thành bản đồ đám mây điểm 3D sống động tô màu theo độ cao địa hình, kèm mô hình khung UAV di chuyển theo thời gian thực.
 
 ### Bước 3: Bay Tuần tra, Hợp nhất Cảm biến & Đánh dấu Cứu hộ
 Trong lúc bạn điều khiển UAV bay tuần tra trên khu vực rừng và ngôi làng:
@@ -63,7 +83,7 @@ Trong lúc bạn điều khiển UAV bay tuần tra trên khu vực rừng và n
 
 ---
 
-## 3. Cấu trúc Thư mục Dự án
+## 4. Cấu trúc Thư mục Dự án
 
 ```text
 UAV Search-and-Rescue/
@@ -106,12 +126,12 @@ UAV Search-and-Rescue/
 │   └── metrics.py                    # Đối chiếu tọa độ định vị với Ground Truth, tính sai số 2D/3D (Mean, Median, P90)
 │
 ├── simulation/                       # 5. MÔI TRƯỜNG MÔ PHỎNG UNREAL ENGINE & AIRSIM
-│   ├── WindowsNoEditor/              # [TẢI TỪ GOOGLE DRIVE] Bộ cài bản đồ 3D MedievalVillageMegascansS
-│   ├── airsim/                       # Thư viện giao tiếp AirSim tích hợp sẵn
-│   ├── airsim_settings.json          # Cấu hình thông số Camera và LiDAR cho AirSim
-│   ├── simulator_lifecycle.py        # Quản lý khởi động/đóng an toàn tiến trình Unreal Engine
+│   ├── WindowsNoEditor/              # [TẢI TỪ GOOGLE DRIVE] Bộ cài bản đồ 3D Unreal Engine MedievalVillageMegascansS
+│   ├── airsim/                       # Thư viện giao tiếp RPC AirSim tích hợp sẵn
+│   ├── airsim_settings.json          # Cấu hình chi tiết phương tiện UAV1, Camera RGB/Nhiệt và cảm biến LiDAR 16 kênh
+│   ├── simulator_lifecycle.py        # Quản lý khởi động/đóng an toàn tiến trình Unreal Engine và cổng 41451
 │   ├── scene_setup.py                # Thiết lập bức xạ nhiệt cho các đối tượng trong map và xuất tọa độ chuẩn
-│   └── ground_truth.json             # Tọa độ thực 3D của 12 mục tiêu nạn nhân trong bản đồ
+│   └── ground_truth.json             # Tọa độ thực 3D của 12 mục tiêu nạn nhân trong bản đồ Unreal Engine
 │
 ├── outputs/                          # 6. KẾT QUẢ ĐẦU RA & DỮ LIỆU PHIÊN BAY
 │   ├── reconstructed_map_3d.ply      # File bản đồ đám mây điểm 3D đã tái tạo
@@ -125,10 +145,10 @@ UAV Search-and-Rescue/
 
 ---
 
-## 4. Hướng dẫn Cài đặt & Thiết lập Bản đồ (Map Setup)
+## 5. Hướng dẫn Cài đặt & Thiết lập Bản đồ Unreal Engine (Map Setup)
 
 ### Bước 1: Cài đặt Thư viện Python
-- Yêu cầu **Windows 10/11 (64-bit)** và **Python 3.10 – 3.12** (khuyến nghị máy có card đồ họa rời NVIDIA hỗ trợ CUDA).
+- Yêu cầu **Windows 10/11 (64-bit)**, **DirectX 11/12** và **Python 3.10 – 3.12** (khuyến nghị máy có card đồ họa rời NVIDIA hỗ trợ CUDA để chạy mượt cả Unreal Engine và AI YOLO26m).
 - Mở Terminal tại thư mục gốc của dự án và chạy:
 
 ```powershell
@@ -139,19 +159,19 @@ pip install -r requirements.txt
 
 ---
 
-### Bước 2: Tải và Giải nén Bản đồ Mô phỏng từ Google Drive
+### Bước 2: Tải và Giải nén Bản đồ Unreal Engine (`WindowsNoEditor`) từ Google Drive
 
-Do bộ cài môi trường 3D Unreal Engine (`WindowsNoEditor`) có dung lượng lớn nên được lưu trữ riêng trên Google Drive:
+Do gói môi trường 3D Unreal Engine 4.27 (`WindowsNoEditor` đã tích hợp sẵn plugin AirSim) có dung lượng lớn nên được lưu trữ riêng trên Google Drive:
 
-> 🔗 **Link tải Bản đồ Mô phỏng (`WindowsNoEditor`):**  
-> **[https://drive.google.com/drive/folders/1K6tB3YrZMrOn6bqsxV0o7MlenKFrMkLf?usp=sharing]**
+> 🔗 **Link tải Bản đồ Mô phỏng Unreal Engine (`WindowsNoEditor`):**  
+> **[👉 DÁN LINK GOOGLE DRIVE CỦA BẠN VÀO ĐÂY 👈]**
 
 Sau khi tải về, thực hiện **1 trong 2 cách** sau để gắn bản đồ vào dự án:
 
 - **Cách 1 — Giải nén trực tiếp vào `simulation/` (Khuyên dùng):**  
-  Giải nén thư mục `WindowsNoEditor` vào trong thư mục `simulation/` sao cho đường dẫn tới file `.exe` đúng như sau:
+  Giải nén thư mục `WindowsNoEditor` vào trong thư mục `simulation/` sao cho đường dẫn tới file `.exe` của Unreal Engine đúng như sau:
   ```text
-  UAV Search-and-Rescue/simulation/WindowsNoEditor/MedievalVillageMegascansS.exe
+  simulation/WindowsNoEditor/MedievalVillageMegascansS.exe
   ```
 
 - **Cách 2 — Nối đường dẫn nhanh (Junction Link) nếu Map đang để ở ổ đĩa khác:**  
@@ -160,7 +180,7 @@ Sau khi tải về, thực hiện **1 trong 2 cách** sau để gắn bản đ�
   mklink /J "simulation\WindowsNoEditor" "D:\Map\WindowsNoEditor"
   ```
 
-Kiểm tra nhanh xem dự án đã nhận đủ Map, Model và thư viện chưa bằng lệnh:
+Kiểm tra nhanh xem dự án đã nhận đủ Map Unreal Engine, Model YOLO và thư viện chưa bằng lệnh:
 
 ```powershell
 python main.py check
@@ -168,24 +188,24 @@ python main.py check
 
 ---
 
-## 5. Cách Chạy Chương trình
+## 6. Cách Chạy Chương trình
 
 ### Cách 1: Chạy nhanh bằng `run.bat` (1-Click)
-Bấm đúp chuột trực tiếp vào file **`run.bat`** ở thư mục gốc. Hệ thống sẽ tự động mở Simulator, hiệu chuẩn 12 mục tiêu nhiệt, và bật đồng thời **Trạm Điều khiển Mặt đất 2D (GCS HUD)** cùng **Cửa sổ Bản đồ 3D Thời gian thực (Open3D)**.
+Bấm đúp chuột trực tiếp vào file **`run.bat`** ở thư mục gốc. Hệ thống sẽ tự động mở bản đồ Unreal Engine, hiệu chuẩn 12 mục tiêu nhiệt, và bật đồng thời **Trạm Điều khiển Mặt đất 2D (GCS HUD)** cùng **Cửa sổ Bản đồ 3D Thời gian thực (Open3D)**.
 
 ### Cách 2: Chạy bằng lệnh Python theo từng chế độ
 
 ```powershell
-# 1. Chạy toàn bộ hệ thống (Mặc định: ẩn cửa sổ render của Unreal để dồn tài nguyên GPU cho GCS & Bản đồ 3D)
+# 1. Chạy toàn bộ hệ thống (Mặc định: chạy ngầm cửa sổ render của Unreal để dồn GPU cho GCS & Bản đồ 3D)
 python main.py
 
-# 2. Chạy toàn bộ hệ thống và hiển thị cả cửa sổ 3D của Unreal Engine bên cạnh GCS
+# 2. Chạy toàn bộ hệ thống và HIỂN THỊ CẢ CỬA SỔ 3D CỦA UNREAL ENGINE (góc nhìn bay sau lưng UAV)
 python main.py all --show-unreal
 
 # 3. Chỉ bật môi trường mô phỏng Unreal Engine / AirSim và hiệu chuẩn mục tiêu nhiệt
 python main.py sim
 
-# 4. Chỉ mở Trạm điều khiển 2D (dùng khi Simulator đã chạy sẵn)
+# 4. Chỉ mở Trạm điều khiển 2D (dùng khi Unreal Engine / AirSim đã bật sẵn)
 python main.py gcs
 
 # 5. Chỉ mở Cửa sổ Bản đồ Đám mây Điểm 3D thời gian thực
@@ -195,7 +215,7 @@ python main.py lidar
 python main.py map
 ```
 
-Nếu muốn mở xem ngay bản đồ 3D mẫu đã dựng sẵn trong `outputs/` mà không cần bật Simulator:
+Nếu muốn mở xem ngay bản đồ 3D mẫu đã dựng sẵn trong `outputs/` mà không cần bật Unreal Engine:
 
 ```powershell
 python app/view_saved_map.py outputs/reconstructed_map_3d.ply
@@ -203,7 +223,7 @@ python app/view_saved_map.py outputs/reconstructed_map_3d.ply
 
 ---
 
-## 6. Bảng Phím Điều khiển (Bàn phím & Tay cầm Xbox)
+## 7. Bảng Phím Điều khiển (Bàn phím & Tay cầm Xbox)
 
 | Chức năng | Bàn phím (Keyboard) | Tay cầm Xbox (XInput) |
 | :--- | :--- | :--- |
