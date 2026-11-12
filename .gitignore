@@ -1,0 +1,21 @@
+# Python bytecode & caches
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Bundled runtime & heavy simulator binaries (uploaded via Google Drive)
+python_env/
+simulation/WindowsNoEditor/
+
+# Runtime temporary & cache directories inside outputs/
+outputs/cache/
+outputs/config/
+outputs/tmp/
+outputs/Unreal/
+outputs/AirSimRecording/
+outputs/runtime/
+outputs/logs/
+outputs/lidar_stream.bin
+outputs/lidar_state.json
+outputs/live_targets.json
+outputs/*.tmp
