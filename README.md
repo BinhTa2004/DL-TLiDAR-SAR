@@ -144,7 +144,7 @@ pip install -r requirements.txt
 Do bộ cài môi trường 3D Unreal Engine (`WindowsNoEditor`) có dung lượng lớn nên được lưu trữ riêng trên Google Drive:
 
 > 🔗 **Link tải Bản đồ Mô phỏng (`WindowsNoEditor`):**  
-> **[https://drive.google.com/drive/folders/1K6tB3YrZMrOn6bqsxV0o7MlenKFrMkLf?usp=sharing]**
+> **[https://drive.google.com/file/d/1LOmgK6vbJ0kVfmGQegFqbfDdbIUB-yZu/view]**
 
 Sau khi tải về, thực hiện **1 trong 2 cách** sau để gắn bản đồ vào dự án:
 
