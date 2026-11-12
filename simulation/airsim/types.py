@@ -14,9 +14,13 @@ class MsgpackMixin:
     @classmethod
     def from_msgpack(cls, encoded):
         obj = cls()
-        #obj.__dict__ = {k.decode('utf-8'): (from_msgpack(v.__class__, v) if hasattr(v, "__dict__") else v) for k, v in encoded.items()}
-        obj.__dict__ = { k : (v if not isinstance(v, dict) else getattr(getattr(obj, k).__class__, "from_msgpack")(v)) for k, v in encoded.items()}
-        #return cls(**msgpack.unpack(encoded))
+        for k, v in encoded.items():
+            key = k.decode('utf-8', errors='replace') if isinstance(k, bytes) else k
+            current = getattr(obj, key, None)
+            if isinstance(v, dict) and hasattr(current.__class__, "from_msgpack"):
+                setattr(obj, key, current.__class__.from_msgpack(v))
+            else:
+                setattr(obj, key, v)
         return obj
 
 class _ImageType(type):
@@ -110,13 +114,13 @@ class Vector3r(MsgpackMixin):
         return Vector3r(self.x_val - other.x_val, self.y_val - other.y_val, self.z_val - other.z_val)
 
     def __truediv__(self, other):
-        if type(other) in [int, float] + np.sctypes['int'] + np.sctypes['uint'] + np.sctypes['float']:
+        if isinstance(other, (int, float, np.number)):
             return Vector3r( self.x_val / other, self.y_val / other, self.z_val / other)
         else:
             raise TypeError('unsupported operand type(s) for /: %s and %s' % ( str(type(self)), str(type(other))) )
 
     def __mul__(self, other):
-        if type(other) in [int, float] + np.sctypes['int'] + np.sctypes['uint'] + np.sctypes['float']:
+        if isinstance(other, (int, float, np.number)):
             return Vector3r(self.x_val*other, self.y_val*other, self.z_val*other)
         else:
             raise TypeError('unsupported operand type(s) for *: %s and %s' % ( str(type(self)), str(type(other))) )
@@ -188,7 +192,7 @@ class Quaternionr(MsgpackMixin):
     def __truediv__(self, other):
         if type(other) == type(self):
             return self * other.inverse()
-        elif type(other) in [int, float] + np.sctypes['int'] + np.sctypes['uint'] + np.sctypes['float']:
+        elif isinstance(other, (int, float, np.number)):
             return Quaternionr( self.x_val / other, self.y_val / other, self.z_val / other, self.w_val / other)
         else:
             raise TypeError('unsupported operand type(s) for /: %s and %s' % ( str(type(self)), str(type(other))) )

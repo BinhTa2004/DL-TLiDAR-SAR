@@ -1,27 +1,37 @@
-# Danh sach thu vien can thiet cho he thong AirSim Medieval Village UAV + 3D LiDAR Reconstruction
-# Cai dat nhanh: pip install -r requirements.txt
+# ==============================================================================
+# DANH SÁCH THƯ VIỆN CHUẨN CHO HỆ THỐNG UAV SEARCH-AND-RESCUE (THERMAL + 3D LIDAR)
+# Tương thích: Python 3.10 - 3.12 (Hệ điều hành Windows 10/11 64-bit)
+#
+# Cài đặt nhanh toàn bộ thư viện:
+#   pip install -r requirements.txt
+#
+# Lưu ý GPU NVIDIA (Khuyến nghị cài PyTorch hỗ trợ CUDA trước nếu dùng card rời):
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cu124
+# ==============================================================================
 
-# 1. Giao tiep RPC voi Unreal Engine 4.27 AirSim
-msgpack>=1.0.0
-msgpack-rpc-python==0.4.1
+# 1. Giao tiếp RPC với Unreal Engine 4.27 & Microsoft AirSim (Port 41451)
+msgpack>=1.0.0                  # Tested: 1.1.1 (tương thích ngược cả msgpack-python 0.5.6)
+msgpack-rpc-python==0.4.1       # Tested: 0.4.1 (đã tích hợp bản vá tự động cho Python 3.10-3.12)
+tornado>=4.5.3                  # Tested: 4.5.3 / 6.6 (tự động tương thích cả Tornado 4.x và 6.x)
 
-# 2. Toan hoc & Xu ly hinh anh / do hoa
-numpy>=1.24.0
-opencv-python>=4.8.0
-scikit-learn>=1.4.0
-pygame-ce>=2.5.0
-matplotlib>=3.8.0
+# 2. Toán học, Tối ưu hóa Hình học & Xử lý Ảnh Nhiệt / Đồ họa 2D
+numpy>=1.24.0                   # Tested: 1.26.4 / 2.0.2
+scipy>=1.11.0                   # Tested: 1.17.1
+scikit-learn>=1.4.0             # Tested: 1.6.1 (DBSCAN 3D clustering)
+opencv-python>=4.8.0            # Tested: 4.13.0.92 (CLAHE, bilateral filter, sobel, projection)
+Pillow>=10.0.0                  # Tested: 11.1.0
+matplotlib>=3.8.0               # Tested: 3.10.9 (xuất biểu đồ thực nghiệm & bản đồ nhiệt)
+pygame-ce>=2.5.0                # Tested: 2.5.7 (Giao diện trạm điều khiển mặt đất GCS HUD)
 
-# 3. AI & Deep Learning (YOLO & PoinTr Transformer)
-# Chu y: Tren may co GPU NVIDIA, khuyen khich cai PyTorch voi CUDA:
-# pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
-torch>=2.2.0
-torchvision>=0.17.0
-ultralytics>=8.2.0
+# 3. Thị giác Máy tính & Học sâu (YOLOv8n Phát hiện Người trên Ảnh Nhiệt)
+torch>=2.2.0                    # Tested: 2.6.0+cu124
+torchvision>=0.17.0             # Tested: 0.21.0+cu124
+ultralytics>=8.2.0              # Tested: 8.3.161
+PyYAML>=6.0                     # Tested: 6.0.2
 
-# 4. Xu ly & Tai tao Diem 3D LiDAR Ouster OS1-64
-open3d>=0.18.0
+# 4. Xử lý Đám mây Điểm 3D LiDAR & Dựng Bản đồ Không gian
+open3d>=0.18.0                  # Tested: 0.18.0 / 0.20.0 (Voxel grid & 3D LiDAR viewer)
 
-# 5. Dieu khien cua so Windows OS
-pywin32>=306
-psutil>=5.9.0
+# 5. Quản lý Tiến trình & Điều khiển Cửa sổ Hệ điều hành Windows
+pywin32>=306                    # Tested: 310 (win32gui, win32con chia đôi cửa sổ tự động)
+psutil>=5.9.0                   # Tested: 7.2.2 (giám sát tiến trình Unreal Engine Blocks.exe)
