@@ -19,3 +19,4 @@ outputs/lidar_stream.bin
 outputs/lidar_state.json
 outputs/live_targets.json
 outputs/*.tmp
+
