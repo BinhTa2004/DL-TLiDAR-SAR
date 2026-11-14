@@ -69,6 +69,7 @@ def _patch_msgpackrpc():
                 sock = None
                 try:
                     sock = self._address.socket()
+                    sock.setblocking(True)
                     if self._session._timeout:
                         sock.settimeout(float(self._session._timeout))
                     sock.connect(self._address.unpack())
@@ -119,10 +120,18 @@ def _patch_msgpackrpc():
                     pass
                 self._sock = None
 
+    def _send_request(self, method, args):
+        msgid = next(self._generator)
+        future = msgpackrpc.session.Future(self._loop, self._timeout)
+        self._request_table[msgid] = future
+        self._transport.send_message([msgpackrpc.message.REQUEST, msgid, method, args])
+        return future
+
     msgpackrpc.loop.Loop = _DirectLoop
     msgpackrpc.Loop = _DirectLoop
     msgpackrpc.session.Loop = _DirectLoop
     msgpackrpc.client.Loop = _DirectLoop
+    msgpackrpc.session.Session.send_request = _send_request
     _tcp.ClientTransport = _DirectClientTransport
 
 

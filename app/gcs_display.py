@@ -817,7 +817,7 @@ class GCSDisplayMixin:
         r_stab_btn = pygame.Rect(14 + (w - 32) // 2 + 2, iy + 106, (w - 32) // 2 - 2, 22)
         stab_active = self.gimbal_stabilization_enabled
         pygame.draw.rect(surf, (0, 140, 90) if stab_active else (50, 40, 40), r_stab_btn, border_radius=4)
-        stab_label = f"Chống rung [F1]: {'BẬT' if stab_active else 'TẮT'}"
+        stab_label = f"Chống rung [Z]: {'BẬT' if stab_active else 'TẮT'}"
         self.text(surf, stab_label, (r_stab_btn.centerx, iy + 117), 9, (255, 255, 255) if stab_active else (210, 150, 150), bold=True, anchor="center")
         self.sidebar_buttons.append(("toggle_stabilization", r_stab_btn))
 
@@ -941,7 +941,7 @@ class GCSDisplayMixin:
 
         footer_y = h - FOOTER_H
         pygame.draw.rect(cv, (12, 18, 26), (0, footer_y, w, FOOTER_H))
-        help_str = ("[WASD] Bay  [Space/Shift] Cao độ  [D-Pad ▶/J] LiDAR  [D-Pad ▲/F2] 3D Map  [D-Pad ◀/U] Nhiệt FLIR  [M] YOLO  [K] Ghi Data")
+        help_str = ("[WASD] Bay  [Space/Shift] Cao độ  [J] LiDAR  [F2] 3D Map  [U] Nhiệt FLIR  [M] YOLO  [K] Ghi Data  [F8] Xóa mốc")
         self.text(cv, help_str, (14, footer_y + 7), 11, (160, 210, 240), bold=True)
 
         if self.show_help:
@@ -968,6 +968,7 @@ class GCSDisplayMixin:
             ("RB / Phím R", "Đổi bảng màu Camera Nhiệt: White-Hot / Ironbow / Rainbow / Black-Hot"),
             ("Phím M | Nút trên Sidebar", "BẬT / TẮT mô hình AI YOLO26m phát hiện người (GPU CUDA / CPU)"),
             ("Nút Y / Phím Y", "Đánh dấu NGƯỜI trong 40m, LiDAR xác nhận (ảnh RGB, nhiệt, CSV)"),
+            ("Phím F8 | Z", "Xóa toàn bộ mốc nạn nhân | Bật/tắt chống rung camera"),
             ("D-Pad Lên (↑)", "Hiện / Ẩn đường nối điểm xuất phát với mọi người đã đánh dấu trên bản đồ 3D"),
             ("D-Pad Xuống (↓) | Phím K / F9", "BẬT / TẮT GHI DỮ LIỆU TÌM KIẾM (Ấn lần 1: BẬT  |  Ấn lần 2: TẮT & LƯU vào Data/)"),
             ("Back / Phím T", "Khóa / Mở khóa mục tiêu cứu hộ"),
@@ -1075,10 +1076,18 @@ class GCSDisplayMixin:
         for attempt_flags in [flags, pygame.RESIZABLE | pygame.DOUBLEBUF, pygame.RESIZABLE, 0]:
             try:
                 pygame.display.set_mode(size, attempt_flags, vsync=0)
+                try:
+                    pygame.key.stop_text_input()
+                except Exception:
+                    pass
                 return
             except TypeError:
                 try:
                     pygame.display.set_mode(size, attempt_flags)
+                    try:
+                        pygame.key.stop_text_input()
+                    except Exception:
+                        pass
                     return
                 except Exception:
                     continue
@@ -1086,6 +1095,10 @@ class GCSDisplayMixin:
                 continue
         try:
             pygame.display.set_mode((1280, 720))
+            try:
+                pygame.key.stop_text_input()
+            except Exception:
+                pass
         except Exception as e:
             log.warning(f">> [GCS LOI] Khong the tao cua so hien thi: {e}")
 

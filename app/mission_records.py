@@ -150,15 +150,15 @@ class MissionRecordsMixin:
         write_summary_csv(os.path.join(self.data_dir, "rescue_localization_metrics.csv"), metrics)
 
     def clear_marked_persons(self):
-        """Xóa sạch các mốc đánh dấu nạn nhân cũ (Phím Delete / Backspace)."""
+        """Xóa sạch các mốc đánh dấu nạn nhân cũ (Phím F8)."""
         with self.lock:
             self.marked_persons.clear()
             self.marker_counter = 0
             self.target_locked = False
             self.locked_pos = None
-        self.export_live_targets_json()
+        self.export_live_targets_json(force=True)
         self.write_localization_summary()
-        self.notify("[MỤC TIÊU] ĐÃ XÓA TOÀN BỘ CÁC MỐC ĐÁNH DẤU NẠN NHÂN [DEL]!")
+        self.notify("[MỤC TIÊU] ĐÃ XÓA TOÀN BỘ CÁC MỐC ĐÁNH DẤU NẠN NHÂN [F8]!")
 
     def toggle_rescue_routes(self):
         """Bật/tắt đường thẳng từ vị trí khởi hành tới mọi người đã đánh dấu."""
@@ -282,11 +282,23 @@ class MissionRecordsMixin:
             data_dir = getattr(self, "data_dir", os.path.join(SCRIPT_DIR, "outputs"))
             os.makedirs(data_dir, exist_ok=True)
             target_path = os.path.join(data_dir, "live_targets.json")
-            tmp_path = target_path + ".tmp"
+            tmp_path = f"{target_path}.{os.getpid()}.tmp"
             try:
                 with open(tmp_path, "w", encoding="utf-8") as f:
                     json.dump(out_data, f, indent=2)
-                os.replace(tmp_path, target_path)
+                for _ in range(5):
+                    try:
+                        os.replace(tmp_path, target_path)
+                        break
+                    except PermissionError:
+                        time.sleep(0.01)
+                else:
+                    with open(target_path, "w", encoding="utf-8") as f:
+                        json.dump(out_data, f, indent=2)
+                    try:
+                        os.remove(tmp_path)
+                    except OSError:
+                        pass
             except (PermissionError, OSError):
                 pass
         except Exception:

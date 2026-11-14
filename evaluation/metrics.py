@@ -5,6 +5,7 @@ import json
 import math
 import os
 import tempfile
+import time
 from functools import lru_cache
 from statistics import mean, median
 
@@ -130,7 +131,14 @@ def write_summary_csv(path, metrics):
             writer.writerow({key: f"{value:.3f}" if isinstance(value, float) else
                              "" if value is None else value
                              for key, value in metrics.items()})
-        os.replace(temp_path, path)
+        for attempt in range(10):
+            try:
+                os.replace(temp_path, path)
+                break
+            except PermissionError:
+                if attempt == 9:
+                    raise
+                time.sleep(0.02)
     finally:
         if os.path.exists(temp_path):
             os.remove(temp_path)
@@ -156,7 +164,14 @@ def ensure_csv_columns(path):
             for row in rows[1:]:
                 old = dict(zip(old_header, row))
                 writer.writerow([old.get(column, "") for column in CSV_COLUMNS])
-        os.replace(temp_path, path)
+        for attempt in range(10):
+            try:
+                os.replace(temp_path, path)
+                break
+            except PermissionError:
+                if attempt == 9:
+                    raise
+                time.sleep(0.02)
     finally:
         if os.path.exists(temp_path):
             os.remove(temp_path)

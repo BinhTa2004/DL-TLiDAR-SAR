@@ -69,8 +69,23 @@ def start_live_session(data_dir=DATA, session_id=None):
     }
     for name, payload in states.items():
         destination = data_dir / name
-        temporary = data_dir / (name + ".session.tmp")
-        temporary.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
-        temporary.replace(destination)
+        temporary = data_dir / f"{name}.{os.getpid()}.session.tmp"
+        text = json.dumps(payload, ensure_ascii=False)
+        temporary.write_text(text, encoding="utf-8")
+        replaced = False
+        for _ in range(10):
+            try:
+                temporary.replace(destination)
+                replaced = True
+                break
+            except PermissionError:
+                time.sleep(0.02)
+        if not replaced:
+            try:
+                destination.write_text(text, encoding="utf-8")
+            except PermissionError:
+                pass
+            finally:
+                temporary.unlink(missing_ok=True)
     return session_id
 

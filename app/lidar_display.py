@@ -7,6 +7,7 @@ import numpy as np
 import open3d as o3d
 from .detection_policy import COLORS
 from .runtime_support import get_logger
+from .key_bindings import register_map_keys
 
 log = get_logger("lidar_3d")
 
@@ -328,10 +329,6 @@ class LidarDisplayMixin:
         vis.add_geometry(self.target_lineset)
 
         # Đăng ký các phím chức năng
-        def cb_toggle_scan(v):
-            self.toggle_scanning()
-            return False
-
         def cb_save_map(v):
             self.save_point_cloud()
             return False
@@ -340,7 +337,7 @@ class LidarDisplayMixin:
             now = time.perf_counter()
             if now - getattr(self, "_last_clear_t", 0.0) > 1.5:
                 self._last_clear_t = now
-                log.warning(">> [CẢNH BÁO] Bạn vừa bấm phím C. Nhấn C thêm một lần nữa trong vòng 1.5s nếu thực sự muốn XÓA BẢN ĐỒ 3D!")
+                log.warning(">> [CẢNH BÁO] Bạn vừa bấm phím F6. Nhấn F6 thêm một lần nữa trong vòng 1.5s nếu thực sự muốn XÓA BẢN ĐỒ 3D!")
                 return False
             self._last_clear_t = 0.0
             with self.lock:
@@ -350,12 +347,12 @@ class LidarDisplayMixin:
                 self.pending_render_data = None
             pcd.clear()
             vis.update_geometry(pcd)
-            log.debug(">> [PHÍM C] ĐÃ XÓA TOÀN BỘ BẢN ĐỒ 3D! Bắt đầu quét lại từ đầu.")
+            log.debug(">> [PHÍM F6] ĐÃ XÓA TOÀN BỘ BẢN ĐỒ 3D! Bắt đầu quét lại từ đầu.")
             return False
 
         def cb_change_cmap(v):
             self.colormap_idx = (self.colormap_idx + 1) % len(self.colormaps)
-            log.debug(f">> [PHÍM H] Bảng màu độ cao hiện tại: {self.colormaps[self.colormap_idx].upper()}")
+            log.debug(f">> [PHÍM F5] Bảng màu độ cao hiện tại: {self.colormaps[self.colormap_idx].upper()}")
             self.recolor_needed = True
             return False
 
@@ -368,7 +365,7 @@ class LidarDisplayMixin:
             ctr.set_front([-0.6, -0.6, 0.5])
             ctr.set_up([0, 0, 1])
             ctr.set_zoom(0.7)
-            log.debug(">> [PHÍM R] Đã đặt lại góc nhìn camera về vị trí Drone!")
+            log.debug(">> [PHÍM F4] Đã đặt lại góc nhìn camera về vị trí Drone!")
             return False
 
         def cb_toggle_follow(v):
@@ -380,34 +377,20 @@ class LidarDisplayMixin:
         def cb_increase_point_size(v):
             self.point_size = min(5.0, self.point_size + 0.5)
             vis.get_render_option().point_size = self.point_size
-            log.debug(f">> [PHÍM +] Kích thước điểm: {self.point_size:.1f}px")
+            log.debug(f">> [PHÍM F7] Kích thước điểm: {self.point_size:.1f}px")
             return False
 
         def cb_decrease_point_size(v):
             self.point_size = max(0.5, self.point_size - 0.5)
             vis.get_render_option().point_size = self.point_size
-            log.debug(f">> [PHÍM -] Kích thước điểm: {self.point_size:.1f}px")
+            log.debug(f">> [PHÍM F12] Kích thước điểm: {self.point_size:.1f}px")
             return False
 
         def cb_toggle_markers(v):
             self.show_targets = not self.show_targets
             state = "HIỆN" if self.show_targets else "ẨN"
-            log.debug(f">> [PHÍM M] Khung đánh dấu vị trí người trên bản đồ 3D: [{state}]")
+            log.debug(f">> [PHÍM F3] Khung đánh dấu vị trí người trên bản đồ 3D: [{state}]")
             self.update_target_bounding_boxes(vis, self.uav_pos_enu)
-            return False
-
-        def cb_clear_markers(v):
-            if os.path.exists(self.live_targets_path):
-                try:
-                    with open(self.live_targets_path, "w", encoding="utf-8") as f:
-                        json.dump({"session_id": self.stream_session_id, "timestamp": time.time(),
-                                   "marked_persons": [], "live_detections": []}, f, indent=2)
-                except Exception:
-                    pass
-            self.cached_target_data = {"session_id": self.stream_session_id, "timestamp": time.time(),
-                                       "marked_persons": [], "live_detections": []}
-            self.update_target_bounding_boxes(vis, self.uav_pos_enu)
-            log.debug(">> [DEL / BACKSPACE] ĐÃ XÓA TOÀN BỘ CÁC MỐC ĐÁNH DẤU NẠN NHÂN!")
             return False
 
         def cb_ignore(v):
@@ -420,79 +403,33 @@ class LidarDisplayMixin:
             return False
 
         # Đăng ký phím chức năng
-        vis.register_key_callback(ord('J'), cb_toggle_scan)
-        vis.register_key_callback(ord('j'), cb_toggle_scan)
-        vis.register_key_callback(ord('S'), cb_save_map)
-        vis.register_key_callback(ord('s'), cb_save_map)
-        vis.register_key_callback(ord('P'), cb_save_map)
-        vis.register_key_callback(ord('p'), cb_save_map)
-        vis.register_key_callback(ord('C'), cb_clear_map)
-        vis.register_key_callback(ord('c'), cb_clear_map)
-        vis.register_key_callback(ord('H'), cb_change_cmap)
-        vis.register_key_callback(ord('h'), cb_change_cmap)
-        vis.register_key_callback(ord('R'), cb_reset_view)
-        vis.register_key_callback(ord('r'), cb_reset_view)
-        vis.register_key_callback(ord('F'), cb_toggle_follow)
-        vis.register_key_callback(ord('f'), cb_toggle_follow)
-        vis.register_key_callback(ord('='), cb_increase_point_size)
-        vis.register_key_callback(ord('+'), cb_increase_point_size)
-        vis.register_key_callback(ord('-'), cb_decrease_point_size)
-        vis.register_key_callback(ord('_'), cb_decrease_point_size)
-        vis.register_key_callback(ord('M'), cb_toggle_markers)
-        vis.register_key_callback(ord('m'), cb_toggle_markers)
-        vis.register_key_callback(127, cb_clear_markers)
-        vis.register_key_callback(8, cb_clear_markers)
-
-        # KHÓA CHẶN TOÀN DIỆN MỌI PHÍM ĐIỀU KHIỂN BAY CỦA UAV:
-        # Ngăn tuyệt đối Open3D tự động đóng cửa sổ khi bấm WASD, Q, E, Space, Shift, Ctrl, Alt, Tab, V, Y, T, K, U, I...
-        safe_keys = [
-            81, 113,  # Q, q (Yaw Left)
-            69, 101,  # E, e (Yaw Right)
-            87, 119,  # W, w (Forward)
-            65, 97,   # A, a (Left)
-            68, 100,  # D, d (Right)
-            76, 108,  # L, l (Takeoff/Land)
-            32,       # Space (Climb)
-            340, 344, # Left/Right Shift (Descend)
-            341, 345, # Left/Right Ctrl (Boost)
-            342, 346, # Left/Right Alt
-            258,      # Tab
-            86, 118,  # V, v (Cam FPV/Chase)
-            89, 121,  # Y, y (Mark Target)
-            84, 116,  # T, t (Lock Target)
-            75, 107,  # K, k (Record Data)
-            85, 117,  # U, u (Thermal Cam)
-            73, 105,  # I, i (Invert Pitch)
-            79, 111,  # O, o (HUD Box)
-            71, 103,  # G, g (Gimbal Preset)
-            49, 50, 51, # 1, 2, 3 (Preset Gimbal)
-            262, 263, 264, 265, # Arrow keys
-            290, 291, 298, 299, 300 # F1, F2, F9, F10, F11
-        ]
-        for k in safe_keys:
-            try:
-                vis.register_key_callback(k, cb_ignore)
-            except Exception:
-                pass
-
-        vis.register_key_callback(256, cb_esc_exit)  # Chỉ ESC mới đóng cửa sổ có chủ đích
+        register_map_keys(vis, {
+            "save_map": cb_save_map,
+            "toggle_markers": cb_toggle_markers,
+            "reset_view": cb_reset_view,
+            "change_colormap": cb_change_cmap,
+            "clear_map": cb_clear_map,
+            "increase_point_size": cb_increase_point_size,
+            "decrease_point_size": cb_decrease_point_size,
+            "toggle_follow": cb_toggle_follow,
+        }, cb_ignore, cb_esc_exit)
 
         log.debug("\n" + "="*75)
         log.debug("  HƯỚNG DẪN ĐIỀU KHIỂN CỬA SỔ DỰNG ĐỊA HÌNH 3D LIDAR")
         log.debug("="*75)
         log.debug("  [D-Pad Phải ▶] / [J] : BẬT / DỪNG QUÉT ĐỊA HÌNH (Lần 1: Bật, Lần 2: Dừng)")
         log.debug("  [D-Pad Lên ▲]       : HIỆN / ẨN ĐƯỜNG NỐI ĐIỂM XUẤT PHÁT VỚI NGƯỜI ĐÃ ĐÁNH DẤU")
-        log.debug("  [S] / [P]           : LƯU BẢN ĐỒ 3D (.PLY) + TỌA ĐỘ MỤC TIÊU CỨU HỘ")
+        log.debug("  [P]                 : LƯU BẢN ĐỒ 3D (.PLY) + TỌA ĐỘ MỤC TIÊU CỨU HỘ")
         log.debug("  [Chuột Trái + Kéo]   : Xoay góc nhìn 3D tự do quanh ngôi làng (Orbit)")
         log.debug("  [Chuột Phải / Giữa]  : Trượt di chuyển bản đồ theo ý muốn (Pan)")
         log.debug("  [Lăn Chuột]          : Phóng to / Thu nhỏ chi tiết (Zoom In/Out)")
-        log.debug("  [M]                  : Bật / Tắt khung đánh dấu vị trí người trên bản đồ 3D")
-        log.debug("  [DEL] / [Backspace]  : Xóa toàn bộ các mốc đánh dấu nạn nhân")
-        log.debug("  [R]                  : Đặt lại góc nhìn camera về vị trí Drone")
+        log.debug("  [F3]                 : Bật / Tắt khung đánh dấu vị trí người trên bản đồ 3D")
+        log.debug("  [F8]                 : Xóa toàn bộ các mốc đánh dấu nạn nhân (xử lý qua GCS)")
+        log.debug("  [F4]                 : Đặt lại góc nhìn camera về vị trí Drone")
         log.debug("  [F]                  : Bật / Tắt chế độ Camera tự động bám theo Drone")
-        log.debug("  [H]                  : Đổi bảng màu độ cao (Turbo -> Jet -> Viridis)")
-        log.debug("  [+] / [-]            : Tăng / Giảm kích thước hạt điểm (Point Size)")
-        log.debug("  [C] (2 lần)          : Xác nhận xóa bản đồ để quét lại từ đầu")
+        log.debug("  [F5]                 : Đổi bảng màu độ cao (Turbo -> Jet -> Viridis)")
+        log.debug("  [F7] / [F12]         : Tăng / Giảm kích thước hạt điểm (Point Size)")
+        log.debug("  [F6] (2 lần)         : Xác nhận xóa bản đồ để quét lại từ đầu")
         log.debug("  [Esc]                : Thoát cửa sổ dựng hình 3D")
         log.debug("  * Chú ý: Phím bay WASD, Q, E, Space, Shift không bao giờ làm tắt cửa sổ map!")
         log.debug("="*75 + "\n")
@@ -578,7 +515,7 @@ class LidarDisplayMixin:
                         n_pts = len(self.cached_snap_pts) if self.cached_snap_pts is not None else 0
                         curr_pos = np.copy(self.uav_pos_enu)
                     scan_str = "▶ ĐANG QUÉT" if self.lidar_scanning else "⏸ ĐÃ DỪNG"
-                    log.debug(f"[3D MAP] Trạng thái: {scan_str} | Điểm: {n_pts:,} pts | UAV: (X:{curr_pos[0]:.1f}m, Y:{curr_pos[1]:.1f}m, Cao:{curr_pos[2]:.1f}m) | [J]: Bật/Dừng | [S]: Lưu PLY")
+                    log.debug(f"[3D MAP] Trạng thái: {scan_str} | Điểm: {n_pts:,} pts | UAV: (X:{curr_pos[0]:.1f}m, Y:{curr_pos[1]:.1f}m, Cao:{curr_pos[2]:.1f}m) | [J]: Bật/Dừng | [P]: Lưu PLY")
 
                 # 4. Xử lý sự kiện cửa sổ & chuột ở nhịp ổn định
                 if not vis.poll_events():

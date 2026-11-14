@@ -41,7 +41,15 @@ def write_json_atomic(path, value):
     try:
         with os.fdopen(handle, "w", encoding="utf-8") as stream:
             json.dump(value, stream, indent=2, ensure_ascii=False, allow_nan=False)
-        os.replace(temporary, path)
+        for attempt in range(10):
+            try:
+                os.replace(temporary, path)
+                break
+            except PermissionError:
+                if attempt == 9:
+                    Path(path).write_text(Path(temporary).read_text(encoding="utf-8"), encoding="utf-8")
+                else:
+                    time.sleep(0.02)
     finally:
         if os.path.exists(temporary):
             os.remove(temporary)

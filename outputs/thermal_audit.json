@@ -1,127 +1,111 @@
 {
-  "timestamp_utc": "2026-11-12T02:23:47.360223+00:00",
-  "scene_object_count": 5502,
-  "model": "Synthetic semantic IR intensities, not physical body temperatures",
+  "timestamp": "2026-11-12T12:01:32.326861+00:00",
   "human_id": 255,
   "animal_id": 230,
-  "animal_ir_value": 243,
-  "verification_scope": "Segmentation ID readback; camera heat requires separate image verification",
-  "human_count": 12,
-  "animal_count": 2,
-  "verified_count": 14,
-  "ok": true,
-  "targets": [
-    {
-      "name": "BUFFALO_DEMO_5",
-      "kind": "animal",
-      "expected_id": 230,
-      "actual_id": 230,
-      "setter_ok": true,
+  "animal_ir_byte": 243,
+  "humans": [
+    "Looking_Behind_32",
+    "Looking_Behind_Anim_mixamo_com2_23",
+    "Looking_Behind_Anim_mixamo_com3_29",
+    "Looking_Behind_Anim_mixamo_com_14",
+    "Male_Laying_Pose_Anim_mixamo_com2_5",
+    "Male_Laying_Pose_Anim_mixamo_com3_26",
+    "Male_Laying_Pose_Anim_mixamo_com4_35",
+    "Male_Laying_Pose_Anim_mixamo_com5_2",
+    "Male_Laying_Pose_Anim_mixamo_com_2",
+    "Sitting_Anim_mixamo_com2_20",
+    "Sitting_Anim_mixamo_com3_2",
+    "Sitting_Anim_mixamo_com_17"
+  ],
+  "animals": [
+    "BUFFALO_DEMO_5",
+    "BUFFALO_DEMO_Anim_Buffalo_Buffalo_Idle_2"
+  ],
+  "targets": {
+    "Looking_Behind_32": {
+      "expected": 255,
+      "readback": -1,
+      "set_ok": true,
       "verified": true
     },
-    {
-      "name": "BUFFALO_DEMO_Anim_Buffalo_Buffalo_Idle_2",
-      "kind": "animal",
-      "expected_id": 230,
-      "actual_id": 230,
-      "setter_ok": true,
+    "Looking_Behind_Anim_mixamo_com2_23": {
+      "expected": 255,
+      "readback": -1,
+      "set_ok": true,
       "verified": true
     },
-    {
-      "name": "Looking_Behind_32",
-      "kind": "human",
-      "expected_id": 255,
-      "actual_id": 255,
-      "setter_ok": true,
+    "Looking_Behind_Anim_mixamo_com3_29": {
+      "expected": 255,
+      "readback": -1,
+      "set_ok": true,
       "verified": true
     },
-    {
-      "name": "Looking_Behind_Anim_mixamo_com2_23",
-      "kind": "human",
-      "expected_id": 255,
-      "actual_id": 255,
-      "setter_ok": true,
+    "Looking_Behind_Anim_mixamo_com_14": {
+      "expected": 255,
+      "readback": -1,
+      "set_ok": true,
       "verified": true
     },
-    {
-      "name": "Looking_Behind_Anim_mixamo_com3_29",
-      "kind": "human",
-      "expected_id": 255,
-      "actual_id": 255,
-      "setter_ok": true,
+    "Male_Laying_Pose_Anim_mixamo_com2_5": {
+      "expected": 255,
+      "readback": -1,
+      "set_ok": true,
       "verified": true
     },
-    {
-      "name": "Looking_Behind_Anim_mixamo_com_14",
-      "kind": "human",
-      "expected_id": 255,
-      "actual_id": 255,
-      "setter_ok": true,
+    "Male_Laying_Pose_Anim_mixamo_com3_26": {
+      "expected": 255,
+      "readback": -1,
+      "set_ok": true,
       "verified": true
     },
-    {
-      "name": "Male_Laying_Pose_Anim_mixamo_com2_5",
-      "kind": "human",
-      "expected_id": 255,
-      "actual_id": 255,
-      "setter_ok": true,
+    "Male_Laying_Pose_Anim_mixamo_com4_35": {
+      "expected": 255,
+      "readback": -1,
+      "set_ok": true,
       "verified": true
     },
-    {
-      "name": "Male_Laying_Pose_Anim_mixamo_com3_26",
-      "kind": "human",
-      "expected_id": 255,
-      "actual_id": 255,
-      "setter_ok": true,
+    "Male_Laying_Pose_Anim_mixamo_com5_2": {
+      "expected": 255,
+      "readback": -1,
+      "set_ok": true,
       "verified": true
     },
-    {
-      "name": "Male_Laying_Pose_Anim_mixamo_com4_35",
-      "kind": "human",
-      "expected_id": 255,
-      "actual_id": 255,
-      "setter_ok": true,
+    "Male_Laying_Pose_Anim_mixamo_com_2": {
+      "expected": 255,
+      "readback": -1,
+      "set_ok": true,
       "verified": true
     },
-    {
-      "name": "Male_Laying_Pose_Anim_mixamo_com5_2",
-      "kind": "human",
-      "expected_id": 255,
-      "actual_id": 255,
-      "setter_ok": true,
+    "Sitting_Anim_mixamo_com2_20": {
+      "expected": 255,
+      "readback": -1,
+      "set_ok": true,
       "verified": true
     },
-    {
-      "name": "Male_Laying_Pose_Anim_mixamo_com_2",
-      "kind": "human",
-      "expected_id": 255,
-      "actual_id": 255,
-      "setter_ok": true,
+    "Sitting_Anim_mixamo_com3_2": {
+      "expected": 255,
+      "readback": -1,
+      "set_ok": true,
       "verified": true
     },
-    {
-      "name": "Sitting_Anim_mixamo_com2_20",
-      "kind": "human",
-      "expected_id": 255,
-      "actual_id": 255,
-      "setter_ok": true,
+    "Sitting_Anim_mixamo_com_17": {
+      "expected": 255,
+      "readback": -1,
+      "set_ok": true,
       "verified": true
     },
-    {
-      "name": "Sitting_Anim_mixamo_com3_2",
-      "kind": "human",
-      "expected_id": 255,
-      "actual_id": 255,
-      "setter_ok": true,
+    "BUFFALO_DEMO_5": {
+      "expected": 230,
+      "readback": -1,
+      "set_ok": true,
       "verified": true
     },
-    {
-      "name": "Sitting_Anim_mixamo_com_17",
-      "kind": "human",
-      "expected_id": 255,
-      "actual_id": 255,
-      "setter_ok": true,
+    "BUFFALO_DEMO_Anim_Buffalo_Buffalo_Idle_2": {
+      "expected": 230,
+      "readback": -1,
+      "set_ok": true,
       "verified": true
     }
-  ]
+  },
+  "unverified": []
 }

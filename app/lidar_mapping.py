@@ -441,7 +441,7 @@ class UAVLiDAR3DReconstruction(LidarDisplayMixin):
                 self.need_gpu_update = True
 
     def _trigger_full_recolor(self):
-        """Tô lại màu toàn bộ bản đồ khi người dùng đổi bảng màu [H]"""
+        """Tô lại màu toàn bộ bản đồ khi người dùng đổi bảng màu [F5]"""
         try:
             pts = np.asarray(self.global_pcd.points)
             if len(pts) > 0:

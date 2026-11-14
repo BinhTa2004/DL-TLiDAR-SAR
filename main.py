@@ -133,8 +133,10 @@ def main():
     os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
     if args.mode == "check":
         required = ["simulation/airsim_settings.json", "simulation/WindowsNoEditor/MedievalVillageMegascansS.exe",
-                    "python_env/python.exe", DETECTOR.model_path]
+                    DETECTOR.model_path]
         missing = [p for p in required if not local_path(p).is_file()]
+        if not Path(sys.executable).is_file() and not local_path("python_env/python.exe").is_file():
+            missing.append("python_env/python.exe")
         modules = ["airsim", "numpy", "cv2", "pygame", "open3d", "torch",
                    "ultralytics", "win32gui", "psutil"]
         missing += [f"module {m}" for m in modules if importlib.util.find_spec(m) is None]

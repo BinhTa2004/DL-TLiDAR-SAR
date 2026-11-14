@@ -224,8 +224,11 @@ class UAVUnifiedSystem(GCSDisplayMixin, FlightControlMixin, SensorWorkersMixin, 
         return detections
 
     def __init__(self):
-        self.session_id = start_live_session(
-            session_id=int(os.environ["UAV_SESSION_ID"]) if os.environ.get("UAV_SESSION_ID") else None)
+        self.session_id = (
+            int(os.environ["UAV_SESSION_ID"])
+            if os.environ.get("UAV_SESSION_ID")
+            else start_live_session()
+        )
         self.running = True
         self.lock = threading.Lock()
         self.vehicle_name = "UAV1"
@@ -954,35 +957,10 @@ class UAVUnifiedSystem(GCSDisplayMixin, FlightControlMixin, SensorWorkersMixin, 
                     if event.key == pygame.K_ESCAPE:
                         if self.fullscreen: self.set_display(False)
                         else: self.running = False
-                    elif event.key == pygame.K_F10: self.auto_arrange_windows()
-                    elif event.key == pygame.K_F2: self.open_or_focus_3d_map()
+                    # Other shortcuts are polled once in poll_flight_inputs,
+                    # including F8, so focusing this window cannot fire twice.
                     elif event.key == pygame.K_F11: self.set_display(not self.fullscreen)
                     elif event.key == pygame.K_F1: self.show_help = not self.show_help
-                    elif event.key == pygame.K_i: self.toggle_invert_pitch()
-                    elif event.key == pygame.K_g: self.cycle_gimbal()
-                    elif event.key in (pygame.K_1, pygame.K_KP1): self.set_gimbal(0.0)
-                    elif event.key in (pygame.K_2, pygame.K_KP2): self.set_gimbal(-45.0)
-                    elif event.key in (pygame.K_3, pygame.K_KP3): self.set_gimbal(-90.0)
-                    elif event.key == pygame.K_m: self.toggle_yolo_mode()
-                    elif event.key == pygame.K_o: self.toggle_bbox()
-                    elif event.key == pygame.K_j: self.toggle_lidar()
-                    elif event.key == pygame.K_u: self.toggle_thermal()
-                    elif event.key == pygame.K_y: self.mark_person_waypoint()
-                    elif event.key in (pygame.K_DELETE, pygame.K_BACKSPACE): self.clear_marked_persons()
-                    elif event.key in (pygame.K_k, pygame.K_F9): self.toggle_recording()
-                    elif event.key == pygame.K_l:
-                        if self.is_airborne or self.flight_armed: self.trigger_land()
-                        else: self.trigger_takeoff()
-                    elif event.key == pygame.K_v: self.toggle_rgb_view()
-                    elif event.key == pygame.K_r:
-                        self.palette_idx = (self.palette_idx + 1) % len(self.thermal_palettes)
-                    elif event.key == pygame.K_x:
-                        self.lidar_range_idx = (self.lidar_range_idx + 1) % len(self.lidar_ranges)
-                    elif event.key == pygame.K_c:
-                        self.lidar_cmap_idx = (self.lidar_cmap_idx + 1) % len(self.lidar_colormaps)
-                        self.cached_colorbar_surf = None
-                    elif event.key == pygame.K_h: self.is_hover = not self.is_hover
-                    elif event.key == pygame.K_t: self.toggle_target_lock()
 
             self.ui_fps = clock.get_fps()
             try:

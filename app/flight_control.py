@@ -8,10 +8,10 @@ from configs.config import RUNTIME
 from .runtime_support import get_logger
 from .input_devices import (
     is_key_down, VK_1, VK_2, VK_3, VK_A, VK_ADD, VK_B, VK_C, VK_CTRL, VK_D,
-    VK_DOWN, VK_E, VK_F1, VK_F10, VK_F2, VK_F9, VK_G, VK_H, VK_I, VK_J, VK_K,
+    VK_DOWN, VK_E, VK_F8, VK_F10, VK_F2, VK_F9, VK_G, VK_H, VK_I, VK_J, VK_K,
     VK_L, VK_LBRACKET, VK_M, VK_N, VK_NUMPAD1, VK_NUMPAD2, VK_NUMPAD3, VK_O,
     VK_OEM_MINUS, VK_OEM_PLUS, VK_PGDN, VK_PGUP, VK_Q, VK_R, VK_RBRACKET, VK_S,
-    VK_SHIFT, VK_SPACE, VK_SUBTRACT, VK_T, VK_TAB, VK_U, VK_UP, VK_V, VK_W, VK_X, VK_Y,
+    VK_SHIFT, VK_SPACE, VK_SUBTRACT, VK_T, VK_TAB, VK_U, VK_UP, VK_V, VK_W, VK_X, VK_Y, VK_Z,
 )
 CMD_PERIOD = RUNTIME.command_period_s
 CMD_DURATION = RUNTIME.command_duration_s
@@ -279,12 +279,13 @@ class FlightControlMixin:
         elif check_edge(VK_3, "_edge_3") or check_edge(VK_NUMPAD3, "_edge_n3"): self.set_gimbal(-90.0)
         elif check_edge(VK_G, "_edge_g"): self.cycle_gimbal()
         elif check_edge(VK_I, "_edge_i"): self.toggle_invert_pitch()
-        elif check_edge(VK_F1, "_edge_f1"): self.toggle_gimbal_stabilization()
+        elif check_edge(VK_Z, "_edge_z"): self.toggle_gimbal_stabilization()
 
         if check_edge(VK_M, "_edge_m"): self.toggle_yolo_mode()
         if check_edge(VK_J, "_edge_j"): self.toggle_lidar()
         if check_edge(VK_U, "_edge_u"): self.toggle_thermal()
         if check_edge(VK_Y, "_edge_y"): self.mark_person_waypoint()
+        if check_edge(VK_F8, "_edge_f8"): self.clear_marked_persons()
         if check_edge(VK_V, "_edge_v"): self.toggle_rgb_view()
         if check_edge(VK_R, "_edge_r"): self.palette_idx = (self.palette_idx + 1) % len(self.thermal_palettes)
         if check_edge(VK_X, "_edge_x"): self.lidar_range_idx = (self.lidar_range_idx + 1) % len(self.lidar_ranges)
